@@ -1,34 +1,19 @@
 import React, { useState } from "react";
 import Table from "./table";
+import Form from "./form";
 
 // define MyApp component as a function that returns what is supposed to be rendered on the screen
 // the <Table characterData=... /> line calls the Table component and gives it the character array
 function MyApp() {
-    const [characters, setCharacters] = useState([
-        {
-            name: "Charlie",
-            job: "Janitor"
-        },
-        {
-            name: "Mac",
-            job: "Bouncer"
-        },
-        {
-            name: "Dee",
-            job: "Aspiring Actress"
-        },
-        {
-            name: "Dennis",
-            job: "Bartender"
-        }
-    ]);
-    
+    const [characters, setCharacters] = useState([]);
+
     return (
         <div className="container">
             <Table
                 characterData={characters}
                 removeCharacter={removeOneCharacter}
             />
+            <Form />
         </div>
     );
 }
