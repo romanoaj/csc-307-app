@@ -57,12 +57,24 @@ const addUser = (user) => {
 const deleteUserById = (id) => {
     return users["users_list"].filter((user) => user["id"] !== id)};
 
+const findUserByNameAndJob = (name, job) => {
+    let result = users["users_list"]
+    .filter((user) => user["name"] === name)
+    .filter((user) => user["job"] === job);
+    return result;
+};
+
 // methods:
 app.get("/users", (req, res) => {
     const name = req.query.name; // gets the name we're seeking from the HTTP query in the url
-    if (name != undefined) {
+    const job = req.query.job;
+    if (name != undefined && job == undefined) {
         let result = findUserByName(name);
         result = { users_list: result};
+        res.send(result);
+    } else if (name != undefined && job != undefined) {
+        let result = findUserByNameAndJob(name, job);
+        result = {users_list : result};
         res.send(result);
     } else {
         res.send(users);
