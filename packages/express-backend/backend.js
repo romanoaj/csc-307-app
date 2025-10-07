@@ -1,4 +1,3 @@
-// step 1: import express; express works as an HTTP middleware, sending and receiving HTTP calls
 import express from "express"; // why not capitalized?
 
 const users = {
@@ -31,26 +30,34 @@ const users = {
   ]
 };
 
-// step 3: create express instance and define a port for listening to HTTP requests
 const app = express();
 const port = 8050;
 
-// step 4: set up express app to process incoming data in JSON format and access JSON data in memory
 app.use(express.json());
-// step 5: set API endpoint w/ app.get function
-    // "/" arg: URL pattern that will map to this endpoint
-    // (req, res) arg: two objects representing request and response to be used internally
 app.get("/", (req, res) => {
     res.send("hello");
 });
 
+// helper functions:
 const findUserByName = (name) => {
     return users["users_list"].filter(
         (user) => user["name"] === name
     );
 };
 
-//syntax? this looks like you're defining a mini-function inside of the app.get call
+const findUserById = (id) => 
+    users["users_list"].find(
+        (user) => user["id"] === id); // how is (user) a valid parameter here if not locally explicitly defined
+
+const addUser = (user) => {
+    users["users_list"].push(user);
+    return user;
+}
+
+const deleteUserById = (id) => {
+    return users["users_list"].filter((user) => user["id"] !== id)};
+
+// methods:
 app.get("/users", (req, res) => {
     const name = req.query.name; // gets the name we're seeking from the HTTP query in the url
     if (name != undefined) {
@@ -62,10 +69,6 @@ app.get("/users", (req, res) => {
     }
 });
 
-const findUserById = (id) => 
-    users["users_list"].find(
-        (user) => user["id"] === id); // how is (user) a valid parameter here if not locally explicitly defined
-
 app.get("/users/:id", (req, res) => {
     const id = req.params["id"]; // or req.params.id
     let result = findUserById(id);
@@ -76,16 +79,24 @@ app.get("/users/:id", (req, res) => {
     }
 });
 
-const addUser = (user) => {
-    users["users_list"].push(user);
-    return user;
-}
+app.delete("/users/:id", (req, res) => {
+    const id = req.params.id;
+    let result = deleteUserById(id);
+    if (result === undefined){
+      res.status(404).send("Resource not found");
+    } else {
+      users["users_list"] = result;
+      res.send();
+    }
+});
 
 app.post("/users", (req, res) => {
     const userToAdd = req.body; // adding user from body of request -- where does this come from?
     addUser(userToAdd);
     res.send();
 });
+
+
 
 // step 6: make backend server listen to incoming HTTP requests on the defined port
 app.listen(port, () => {
