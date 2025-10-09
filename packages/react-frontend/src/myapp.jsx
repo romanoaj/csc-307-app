@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Table from "./table";
 import Form from "./form";
 
@@ -8,15 +8,40 @@ function MyApp() {
     const [characters, setCharacters] = useState([ ]);
 
     function updateList(person){
-        setCharacters([...characters, person]); // what is this ellipsis doing
+        postUser(person)
+        .then(() => setCharacters([...characters, person]))
+        .catch((error) => {
+            console.log(error);
+        })
     }
 
     function removeOneCharacter(index){
         const updated = characters.filter((character, i) => {
             return i !== index;
         });
-    setCharacters(updated); // set characters takes the new array you created by filtering as an argument, and will setCharacters (duh) 
-}
+        setCharacters(updated); // set characters takes the new array you created by filtering as an argument, and will setCharacters (duh) 
+    }
+
+    function fetchUsers(){
+        const promise = fetch("http://localhost:8050/users"); // recall fetch is a promise
+        return promise;
+    }
+
+    function postUser(person){
+        const promise = fetch("http://localhost:8050/users", {
+            method: "POST", // makes it a POST instead of default GET
+            headers: { "Content-Type": "application/json" }, // tell server that the body contains a json-format object 
+            body: JSON.stringify(person), // to put the person data into the body of the request
+        });
+        return promise;
+    }
+
+    useEffect(() => { // first arg is fetchUsers(), second arg is empty list to represent the hook should only be called when the app first starts
+        fetchUsers()
+            .then((res) => res.json()) // assumes res is in json format
+            .then((json) => setCharacters(json["users_list"]))
+            .catch((error) => { console.log(error); })
+    }, [] );
 
     return (
         <div className="container">

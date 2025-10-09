@@ -1,4 +1,5 @@
 import express from "express"; // why not capitalized?
+import cors from "cors";
 
 const users = {
   users_list: [
@@ -33,6 +34,7 @@ const users = {
 const app = express();
 const port = 8050;
 
+app.use(cors()); // allows backend to respond to calls coming from a different origin
 app.use(express.json());
 app.get("/", (req, res) => {
     res.send("hello");
