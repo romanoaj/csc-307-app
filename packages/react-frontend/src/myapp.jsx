@@ -21,9 +21,16 @@ function MyApp() {
 
     function removeOneCharacter(index){
         const updated = characters.filter((character, i) => {
-            return i !== index; // creates a new char array w/out the deleted character
+            return i !== index; // adds character to list if this is true
         });
-        setCharacters(updated); // set characters takes the new array you created by filtering as an argument, and will setCharacters (duh) 
+        setCharacters(updated); // set characters takes the new array you created by filtering as an argument, and will setCharacters (duh)
+        // send HTTP DELETE to backend:
+        const promise = fetch(`http://localhost:8050/users/${characters[index].id}`, {
+            method: "DELETE",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(characters[index])
+        });
+        return promise;
     }
 
     function fetchUsers(){
