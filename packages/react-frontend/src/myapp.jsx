@@ -8,16 +8,20 @@ function MyApp() {
     const [characters, setCharacters] = useState([ ]);
 
     function updateList(person){
-        postUser(person)
-        .then(() => setCharacters([...characters, person]))
-        .catch((error) => {
+        postUser(person).then((res) => {
+            if (res.status == 201) {
+                res.json().then((res) => { 
+                    setCharacters([...characters, res])
+                });
+            } else { console.log("wrong status code: ", res.status) } 
+        }).catch((error) => {
             console.log(error);
         })
     }
 
     function removeOneCharacter(index){
         const updated = characters.filter((character, i) => {
-            return i !== index;
+            return i !== index; // creates a new char array w/out the deleted character
         });
         setCharacters(updated); // set characters takes the new array you created by filtering as an argument, and will setCharacters (duh) 
     }
@@ -27,11 +31,11 @@ function MyApp() {
         return promise;
     }
 
-    function postUser(person){
+    function postUser(person){ // when is this triggered to happen (bc there is nothing like app.post?)
         const promise = fetch("http://localhost:8050/users", {
             method: "POST", // makes it a POST instead of default GET
             headers: { "Content-Type": "application/json" }, // tell server that the body contains a json-format object 
-            body: JSON.stringify(person), // to put the person data into the body of the request
+            body: JSON.stringify(person), // to put the person data into a JSON that is the body of the request
         });
         return promise;
     }

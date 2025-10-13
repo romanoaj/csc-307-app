@@ -52,8 +52,15 @@ const findUserById = (id) =>
         (user) => user["id"] === id); // how is (user) a valid parameter here if not locally explicitly defined
 
 const addUser = (user) => {
+    user["id"] = randID();
     users["users_list"].push(user);
     return user;
+}
+
+const randID = () => {
+  const ID = new Array(6);
+  for (let i = 0; i < ID.length; i++) ID[i] = Math.floor(Math.random()*10);
+  return ID.join('');
 }
 
 const deleteUserById = (id) => {
@@ -106,8 +113,8 @@ app.delete("/users/:id", (req, res) => {
 
 app.post("/users", (req, res) => {
     const userToAdd = req.body; // adding user from body of request -- where does this come from?
-    addUser(userToAdd);
-    res.send();
+    const newUser = addUser(userToAdd);
+    res.status(201).send(newUser);
 });
 
 
