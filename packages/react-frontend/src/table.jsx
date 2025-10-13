@@ -7,6 +7,7 @@ function TableHeader(){
                 <tr>
                     <th>Name</th>
                     <th>Job</th>
+                    <th>ID</th>
                     <th>Remove</th>
                 </tr>
             </thead>
@@ -21,8 +22,13 @@ function TableBody(props){
             <tr key={index}>
                 <td>{row.name}</td>
                 <td>{row.job}</td>
+                <td>{row.id}</td>
                 <td>
-                    <button onClick={() => props.removeCharacter(index)}>
+                    <button onClick={
+                        () => props.removeCharacter(index)
+                        .then((res) => { if (res.status != 204){
+                            console.log("wrong status code: ", res.status);
+                        }}).catch((error) => console.log(error))}>
                         Delete
                     </button>
                 </td>

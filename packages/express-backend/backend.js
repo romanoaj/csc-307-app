@@ -107,7 +107,7 @@ app.delete("/users/:id", (req, res) => {
       res.status(404).send("Resource not found");
     } else {
       users["users_list"] = result;
-      res.send();
+      res.status(204).send();
     }
 });
 
