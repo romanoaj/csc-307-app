@@ -1,5 +1,6 @@
-import express from "express"; // why not capitalized?
+import express from "express";
 import cors from "cors";
+import userServices from "./user-services.js";
 
 const users = {
   users_list: [
@@ -34,7 +35,7 @@ const users = {
 const app = express();
 const port = 8050;
 
-app.use(cors()); // allows backend to respond to calls coming from a different origin
+app.use(cors()); // allows Cross-Origin Resource Sharing: lets backend to respond to calls coming from a different origin
 app.use(express.json());
 app.get("/", (req, res) => {
     res.send("hello");
@@ -77,6 +78,13 @@ const findUserByNameAndJob = (name, job) => {
 app.get("/users", (req, res) => {
     const name = req.query.name; // gets the name we're seeking from the HTTP query in the url
     const job = req.query.job;
+    const users = userServices.getUsers(name, job)
+      .then((document) => {
+        res.send(document);
+      })
+      .catch((error) => console.log(error));
+    // return res.send(users);
+    /*
     if (name != undefined && job == undefined) {
         let result = findUserByName(name);
         result = { users_list: result};
@@ -87,37 +95,42 @@ app.get("/users", (req, res) => {
         res.send(result);
     } else {
         res.send(users);
-    }
+    } */
 });
 
 app.get("/users/:id", (req, res) => {
     const id = req.params["id"]; // or req.params.id
-    let result = findUserById(id);
-    if (result === undefined) {
+    let result = userServices.findUserById(id)
+      .then((result) => res.send(result))
+      .catch(() => res.status(404).send("Resource not found"));
+    /* if (result === undefined) {
         res.status(404).send("Resource not found");
     } else {
         res.send(result);
-    }
+    } */
 });
 
 app.delete("/users/:id", (req, res) => {
     const id = req.params.id;
-    let result = deleteUserById(id);
-    if (result === undefined){
+    const result = userServices.deleteUserById(id)
+      .then(res.status(204).send())
+      .catch(() => res.status(404).send("Resource not found"));
+
+    /* if (result === undefined){
       res.status(404).send("Resource not found");
     } else {
       users["users_list"] = result;
       res.status(204).send();
-    }
+    } */
 });
 
 app.post("/users", (req, res) => {
     const userToAdd = req.body; // adding user from body of request -- where does this come from?
-    const newUser = addUser(userToAdd);
-    res.status(201).send(newUser);
+    const newUser = userServices.addUser(userToAdd)
+      .then((user) => res.status(201).send(user))
+      .catch((error) => console.log(error));
+    // res.status(201).send(newUser);
 });
-
-
 
 // step 6: make backend server listen to incoming HTTP requests on the defined port
 app.listen(port, () => {
