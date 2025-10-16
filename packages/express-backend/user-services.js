@@ -56,5 +56,6 @@ export default {
     findUserById, // check
     findUserByName, //check 
     findUserByJob, // check
-    findUserByNameAndJob // check
+    findUserByNameAndJob, // check
+    deleteUserById // check
 };

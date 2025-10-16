@@ -17,12 +17,13 @@ function TableHeader(){
 // create tablebody functional component 
 function TableBody(props){
     // contains the characterData array mapped to return a table row
-    const rows = props.characterData.map((row, index) => {
+    // tr = table row, td = table data
+    const rows = props.characterData.map((row, index) => { // array
         return (
-            <tr key={index}>
+            <tr key={index}> 
                 <td>{row.name}</td>
                 <td>{row.job}</td>
-                <td>{row.id}</td>
+                <td>{row._id}</td>
                 <td>
                     <button onClick={
                         () => props.removeCharacter(index)

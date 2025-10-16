@@ -50,7 +50,7 @@ function MyApp() {
     useEffect(() => { // first arg is fetchUsers(), second arg is empty list to represent the hook should only be called when the app first starts
         fetchUsers()
             .then((res) => res.json()) // assumes res is in json format
-            .then((json) => setCharacters(json["users_list"]))
+            .then((json) => setCharacters(json))
             .catch((error) => { console.log(error); })
     }, [] );
 
