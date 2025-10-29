@@ -39,7 +39,8 @@ test("testing containsNumbers -- success", () => {
     expect(result).toBeFalsy();
 });
 
-// BUG FOUND ! containsNumbers, as written, evaluates a space (" ") as a number! 
+// BUG FOUND ! containsNumbers, as written, evaluates a space (" ") as a number!
+// the expected output here is "false" given that " " is not a number, but the function returns true, so this is a bug. 
 test("testing containsNumbers -- success", () => {
     const result = mut.containsNumbers(" ");
     expect(result).toBeFalsy();
